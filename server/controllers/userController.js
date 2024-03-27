@@ -34,14 +34,6 @@ const loginUser = asyncHandler(async (req, res) => {
         if (!matchedPassword) {
             throw new Error("Invalide Credentials!");
         }
-        console.log({
-            id: findUser?._id,
-            firstname: findUser?.firstname,
-            lastname: findUser?.lastname,
-            email: findUser?.email,
-            role: findUser?.role,
-            token: generateToken(findUser?._id),
-        });
 
         res.json({
             id: findUser?._id,
