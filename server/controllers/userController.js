@@ -1,6 +1,7 @@
 import { generateToken } from "../config/jsonWebTocken.js";
 import User from "../models/userModel.js";
 import asyncHandler from "express-async-handler";
+import validateMongodbid from "../utils/validateMongodbid.js";
 
 const registerUser = asyncHandler(async (req, res) => {
     const email = req.body.email;
@@ -61,6 +62,7 @@ const getAllUsers = asyncHandler(async (req, res) => {
 const getOneUser = asyncHandler(async (req, res) => {
     try {
         const { id } = req.params;
+        validateMongodbid(id);
         const findOneUser = await User.findById(id);
 
         if(!findOneUser){
@@ -81,6 +83,7 @@ const getOneUser = asyncHandler(async (req, res) => {
 
 const deleteUser = asyncHandler(async (req, res) => {
     const { id } = req.params;
+    validateMongodbid(id);
     try {
         const findOneUser = await User.findByIdAndDelete(id);
 
@@ -102,7 +105,7 @@ const deleteUser = asyncHandler(async (req, res) => {
 
 const updateUser = asyncHandler(async (req, res) => {
     const { id } = req.params;
-
+    validateMongodbid(id);
     try {
         const updateUser = await User.findByIdAndUpdate(id, {
             firstname: req?.body.firstname,
@@ -125,4 +128,47 @@ const updateUser = asyncHandler(async (req, res) => {
     }
 });
 
-export {registerUser, loginUser, getAllUsers, getOneUser, deleteUser, updateUser};
+const blockUser = asyncHandler(async (req, res) => {
+    const {id} = req.params;
+    validateMongodbid(id);
+    try {
+        const blockUser = await User.findByIdAndUpdate(id, {
+            isBlocked: true,
+        },
+        {
+            new: true,
+        })
+
+        res.json(blockUser);
+    } catch (error) {
+        throw new Error(error);
+    }
+});
+
+const unBlockUser = asyncHandler(async (req, res) => {
+    const {id} = req.params;
+    validateMongodbid(id);
+    try {
+        const unBlockUser = await User.findByIdAndUpdate(id, {
+            isBlocked: false,
+        },
+        {
+            new: true,
+        });
+
+        res.json(unBlockUser);
+    } catch (error) {
+        throw new Error(error);
+    }
+});
+
+export {
+    registerUser,
+    loginUser, 
+    getAllUsers, 
+    getOneUser, 
+    deleteUser, 
+    updateUser,
+    blockUser,
+    unBlockUser,
+};

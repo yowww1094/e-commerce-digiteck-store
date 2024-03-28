@@ -6,7 +6,6 @@ import "dotenv/config";
 import dbConnect from "./config/dbConnection.js";
 
 import authRouter from "./routes/authRoutes.js";
-import userRoutes from "./routes/authRoutes.js";
 
 import {errorHandler, notFound} from "./middlewares/errorHandlers.js";
 
@@ -22,7 +21,6 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}));
 
 app.use("/api", authRouter);
-app.use("/api", userRoutes);
 
 app.get('/', (req, res)=>(
     res.status(200).json({message: "Hello World!"})
