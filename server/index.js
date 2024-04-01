@@ -1,6 +1,8 @@
 import express from "express";
 import cors from "cors";
 import bodyParser from "body-parser";
+import cookieParser from "cookie-parser";
+
 import "dotenv/config";
 
 import dbConnect from "./config/dbConnection.js";
@@ -19,6 +21,7 @@ dbConnect();
 app.use(cors());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}));
+app.use(cookieParser());
 
 app.use("/api", authRouter);
 
