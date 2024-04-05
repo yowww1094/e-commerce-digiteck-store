@@ -4,7 +4,6 @@ import asyncHandler from "express-async-handler";
 import validateMongodbid from "../utils/validateMongodbid.js";
 import generateRefreshToken from "../config/refreshToken.js";
 import jwt, { decode } from "jsonwebtoken"; 
-import { connection } from "mongoose";
 
 const registerUser = asyncHandler(async (req, res) => {
     const email = req.body.email;
