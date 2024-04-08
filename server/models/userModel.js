@@ -22,7 +22,8 @@ const userSchema = new mongoose.Schema({
     },
     password: {
         type: String,
-        required: true
+        required: true,
+        selet: false,
     },
     isBlocked: {
         type: Boolean,
