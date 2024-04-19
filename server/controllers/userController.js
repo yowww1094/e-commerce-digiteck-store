@@ -215,6 +215,23 @@ const logout = asyncHandler(async (req, res) => {
     return res.sendStatus(200);
 });
 
+const resetPassword = asyncHandler(async (req, res) => {
+    const { _id } = req.user;
+    const newPassword = req.body.newPassword;
+    const newPasswordConfirmation = req.body.newPasswordConfirmation;
+    if(newPassword !== newPasswordConfirmation) throw new Error("passwords does nt match!");
+
+    validateMongodbid(_id);
+    const user = User.findById(_id);
+    if (user) {
+        user.password = newPassword;
+        const updatedPassword = await user.save();
+        res.json(updatedPassword);
+    }else {
+        res.json(user);
+    }
+});
+
 export {
     registerUser,
     loginUser, 
@@ -226,4 +243,5 @@ export {
     unBlockUser,
     handleRefreshToken,
     logout,
+    resetPassword,
 };

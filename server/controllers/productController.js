@@ -21,7 +21,43 @@ const createProduct = asyncHandler(async (req, res) => {
 
 const getAllProducts = asyncHandler(async (req, res) => {
     try {
-        const allProducts = await Product.find();
+        const queryObj = { ...req.query};
+        const excludeField = ["page", "sort", "limit", "field"]
+        excludeField.forEach((el) => delete queryObj[el]);
+        
+        let queryStr = JSON.stringify(queryObj);
+        queryStr = queryStr.replace(/\b(gte|gt|lte|lt)\b/g, match => `$${match}`);
+
+        let query = Product.find(JSON.parse(queryStr));
+
+        // sorting
+        if (req.query.sort) {
+            const sortBy = req.query.sort.split(".").join(" ");
+            query = query.sort(sortBy);
+        }else{
+            query = query.sort("-createdAt")
+        }
+
+        //limiting fileds
+        if (req.query.fields) {
+            const fields = req.query.fields.split(".").join(" ");
+            query = query.select(fields);
+        }else{
+            query = query.select("-__v")
+        }
+
+        //pagination
+        const page = req.query.page;
+        const limit = req.query.limit;
+        const skip = (page - 1 ) * limit;
+
+        query = query.skip(skip).limit(limit);
+        if(req.query.page) {
+            const productCount = await Product.countDocuments();
+            if(skip >= productCount) throw new Error("Page does not exists");
+        }
+
+        const allProducts = await query;
         res.json(allProducts);
     } catch (error) {
         throw new Error(error);

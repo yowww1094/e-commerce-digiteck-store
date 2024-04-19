@@ -17,7 +17,7 @@ const authMiddleware = asyncHandler(async (req, res, next) => {
                 next();
             }
         } catch (error) {
-            throw new Error("Not authorizeed or token expired, Please login again!")
+            throw new Error("Not authorized or token expired, Please login again!")
         }
     } else {
         throw new Error("Token not found!");
